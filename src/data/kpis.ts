@@ -1,7 +1,6 @@
 import type { Kpi } from '@/typescript/interfaces';
 
-const kpiData: { kpi: Kpi[] } = {
-    kpi: [
+export const kpis: Kpi[]  = [
         {
             id: "Company Vehicle Expense_Mechanical",
             name: "Company Vehicle Expense_Mechanical",
@@ -182,5 +181,4 @@ const kpiData: { kpi: Kpi[] } = {
             name: "Warranty - Sales",
             format: "currency"
         }
-    ]
-};
+    ];

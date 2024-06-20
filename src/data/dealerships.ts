@@ -1,7 +1,7 @@
 import type { Dealership } from '@/typescript/interfaces';
 
-export const dealershipData: { dealership: Dealership[] } = {
-    dealership: [
+export const dealerships: Dealership[] =
+    [
         {
             name: "Barry Kia",
             dealerCode: "CA-8374",
@@ -247,5 +247,4 @@ export const dealershipData: { dealership: Dealership[] } = {
             province: "QC",
             country: "CA"
         }
-    ]
-};
+    ];
