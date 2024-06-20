@@ -21,3 +21,9 @@ export interface GroupedKpi {
     sublet: Kpi[];
     other: Kpi[];
 }
+
+export interface Kpidata {
+    dealerCode: string;
+    kpiId: string;
+    value: number;
+}

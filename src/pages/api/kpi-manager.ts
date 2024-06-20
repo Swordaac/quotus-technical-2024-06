@@ -2,16 +2,23 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { kpis } from '@/data/kpis'
 import { dealerships } from '@/data/dealerships'
-import type { Kpi, Dealership, GroupedKpi } from '@/typescript/interfaces';
+import type { Dealership, GroupedKpi, Kpidata } from '@/typescript/interfaces';
+import { generateKpiData } from '@utils/helper';
 
 export type KpiManagerResponse = {
     dealerships: Dealership[];
     kpis: GroupedKpi;
+    kpiData: Kpidata[];
 }
 
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<KpiManagerResponse>
 ) {
-  res.status(200).json({ dealerships, kpis })
+
+  const allKpis = kpis.totals.concat(kpis.customerPay, kpis.internal, kpis.warranty, kpis.expense, kpis.sublet, kpis.other);
+
+  const kpiData = generateKpiData(dealerships, allKpis);
+
+  res.status(200).json({ dealerships, kpis, kpiData })
 }
