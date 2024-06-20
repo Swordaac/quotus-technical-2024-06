@@ -1,249 +1,249 @@
-import type { Dealership } from "@/typescript/interfaces";
+import type { Dealership } from '@/typescript/interfaces';
 
 export const dealershipData: { dealership: Dealership[] } = {
     dealership: [
         {
-            name: "Kia Yearly DEMO",
+            name: "Barry Kia",
             dealerCode: "CA-8374",
-            brand: null,
+            brand: "Kia",
             province: "QC",
             country: "CA"
         },
         {
-            name: "GM Yearly DEMO",
+            name: "Johnson GM",
             dealerCode: "CA-8375",
-            brand: null,
+            brand: "GM",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Hyundai Yearly DEMO",
+            name: "Smith Hyundai",
             dealerCode: "CA-8376",
-            brand: null,
+            brand: "Hyundai",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Ford Yearly DEMO",
+            name: "Davis Ford",
             dealerCode: "CA-8377",
-            brand: null,
+            brand: "Ford",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Volvo Demo",
+            name: "Robinson Volvo",
             dealerCode: "CA-8378",
-            brand: null,
+            brand: "Volvo",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Chrysler Yearly DEMO",
+            name: "Barry Chrysler",
             dealerCode: "CA-8379",
-            brand: null,
+            brand: "Chrysler",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Chrysler 2 Yearly DEMO",
+            name: "Barry Chrysler 2",
             dealerCode: "CA-8380",
-            brand: null,
+            brand: "Chrysler",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Nissan DEMO",
+            name: "Miller Nissan",
             dealerCode: "CA-8381",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "BMW DEMO",
+            name: "Anderson BMW",
             dealerCode: "CA-8382",
-            brand: null,
+            brand: "BMW",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Mitsubishi DEMO",
+            name: "Wilson Mitsubishi",
             dealerCode: "CA-8383",
-            brand: null,
+            brand: "Mitsubishi",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Stellantis DEMO",
+            name: "Taylor Stellantis",
             dealerCode: "Q-CA-0001011",
-            brand: null,
+            brand: "Stellantis",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Stellantis DEMO 2",
+            name: "Taylor Stellantis 2",
             dealerCode: "Q-CA-0001015",
-            brand: null,
+            brand: "Stellantis",
             province: "",
             country: "US"
         },
         {
-            name: "Ford DEMO 2",
+            name: "Williams Ford",
             dealerCode: "Q-CA-0001016",
-            brand: null,
+            brand: "Ford",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Ford DEMO 3",
+            name: "Johnson Ford",
             dealerCode: "Q-CA-0001017",
-            brand: null,
+            brand: "Ford",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Ford DEMO 4",
+            name: "Smith Ford",
             dealerCode: "Q-CA-0001018",
-            brand: null,
+            brand: "Ford",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Stellantis DEMO 3",
+            name: "Brown Stellantis 3",
             dealerCode: "Q-CA-0001019",
-            brand: null,
+            brand: "Stellantis",
             province: "ON",
             country: "CA"
         },
         {
-            name: "Nissan Demo 1",
+            name: "Davis Nissan 1",
             dealerCode: "Q-CA-0001028",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Nissan Demo 2",
+            name: "Martinez Nissan 2",
             dealerCode: "Q-CA-0001029",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Nissan Demo 3",
+            name: "Garcia Nissan 3",
             dealerCode: "Q-CA-0001030",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Nissan Demo 4",
+            name: "Martinez Nissan 4",
             dealerCode: "Q-CA-0001031",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Nissan Demo 5",
+            name: "Taylor Nissan 5",
             dealerCode: "Q-CA-0001032",
-            brand: null,
+            brand: "Nissan",
             province: "",
             country: "US"
         },
         {
-            name: "Nissan Demo 6",
+            name: "Harris Nissan 6",
             dealerCode: "Q-CA-0001033",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Nissan Demo 7",
+            name: "Martinez Nissan 7",
             dealerCode: "Q-CA-0001034",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Nissan Demo 8",
+            name: "Johnson Nissan 8",
             dealerCode: "Q-CA-0001035",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Nissan Demo 9",
+            name: "Martinez Nissan 9",
             dealerCode: "Q-CA-0001036",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Nissan Demo 10",
+            name: "Garcia Nissan 10",
             dealerCode: "Q-CA-0001037",
-            brand: null,
+            brand: "Nissan",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Ford DEMO",
+            name: "Williams Ford",
             dealerCode: "Q-CA-FORDDEMO",
-            brand: null,
+            brand: "Ford",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Mercedes DEMO",
+            name: "Brown Mercedes",
             dealerCode: "Q-DEMO-1001",
-            brand: null,
+            brand: "Mercedes",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Lexus DEMO",
+            name: "Martinez Lexus",
             dealerCode: "Q-DEMO-1002",
-            brand: null,
+            brand: "Lexus",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Honda DEMO",
+            name: "Taylor Honda",
             dealerCode: "Q-DEMO-1003",
-            brand: null,
+            brand: "Honda",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Toyota DEMO",
+            name: "Williams Toyota",
             dealerCode: "Q-DEMO-1004",
-            brand: null,
+            brand: "Toyota",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Hyundai DEMO",
+            name: "Johnson Hyundai",
             dealerCode: "Q-DEMO-1005",
-            brand: null,
+            brand: "Hyundai",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Kia DEMO",
+            name: "Brown Kia",
             dealerCode: "Q-DEMO-1006",
-            brand: null,
+            brand: "Kia",
             province: "QC",
             country: "CA"
         },
         {
-            name: "GMC DEMO",
+            name: "Garcia GMC",
             dealerCode: "Q-DEMO-1007",
-            brand: null,
+            brand: "GMC",
             province: "QC",
             country: "CA"
         },
         {
-            name: "Volskwagen DEMO",
+            name: "Davis Volkswagen",
             dealerCode: "Q-DEMO-1008",
-            brand: null,
+            brand: "Volkswagen",
             province: "QC",
             country: "CA"
         }

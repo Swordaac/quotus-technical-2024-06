@@ -5,3 +5,9 @@ export interface Dealership {
     province: string;
     country: string;
 }
+
+export interface Kpi {
+    id: string;
+    name: string;
+    format: string;
+}
