@@ -20,5 +20,11 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "paths": {
+    "@components/*": [".src/components/*"],
+    "@pages/*": [".src/pages/*"],
+    "@styles/*": [".src/styles/*"],
+    "@typescript/*": [".src/typescript/*"]
+  }
 }
