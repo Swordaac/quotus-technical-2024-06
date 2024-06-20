@@ -27,3 +27,8 @@ export interface Kpidata {
     kpiId: string;
     value: number;
 }
+
+export interface Option {
+    value: string;
+    label: string;
+}
