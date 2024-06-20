@@ -1,4 +1,4 @@
-import type { Kpidata, Dealership, Kpi } from "@/typescript/interfaces";
+import type { Kpidata, Dealership, Kpi, Option, GroupedKpi } from "@/typescript/interfaces";
 
 export const generateKpiData = (dealerships: Dealership[], kpis: Kpi[]): Kpidata[] => {
     const kpiData: Kpidata[] = [];
@@ -22,14 +22,32 @@ export const generateKpiData = (dealerships: Dealership[], kpis: Kpi[]): Kpidata
     return kpiData;
 }
 
-export const getReactSelectOptionsFromDealerships = (dealerships: Dealership[]) => {
+export const getReactSelectOptionsFromDealerships = (dealerships: Dealership[]): Option[] => {
     return dealerships.map((dealer) => {
         return { value: dealer.dealerCode, label: dealer.name }
     });
 }
 
-export const getReactSelectOptionsFromKpis = (kpis: Kpi[]) => {
+export const getReactSelectOptionsFromKpis = (kpis: Kpi[]): Option[] => {
     return kpis.map((kpi) => {
         return { value: kpi.id, label: kpi.name }
     });
 }
+
+export const getReactSelectOptionsFromGroupedKpis = (groupedKpis: GroupedKpi): Option[] => {
+    const options: Option[] = [];
+    Object.keys(groupedKpis).forEach((key) => {
+        options.push({ value: key, label: key });
+    });
+    return options;
+}
+
+export const generateRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+  

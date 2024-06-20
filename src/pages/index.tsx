@@ -7,27 +7,68 @@ import {
   Th,
   Td,
   Thead,
-  Tab,
   Tbody,
+  Tr,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
-import type { Dealership, Kpi, Kpidata, Option } from "@/typescript/interfaces";
+import type {
+  Dealership,
+  Kpi,
+  Kpidata,
+  Option,
+  GroupedKpi,
+} from "@/typescript/interfaces";
 import type { KpiManagerResponse } from "@pages/api/kpi-manager";
 import Select from "react-select";
 import {
+  generateRandomColor,
   getReactSelectOptionsFromDealerships,
   getReactSelectOptionsFromKpis,
 } from "@utils/helper";
 import { useTable } from "react-table";
+import { getReactSelectOptionsFromGroupedKpis } from "@utils/helper";
+import {
+  Chart,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  ChartData,
+  BarElement,
+} from "chart.js";
+import { Line, Bar } from "react-chartjs-2";
+import { kpis } from "../data/kpis";
+
+Chart.register(
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  BarElement
+);
 
 const Home = () => {
   const [dealerships, setDealerships] = useState<Dealership[]>([]);
   const [kpis, setKpis] = useState<Kpi[]>([]);
   const [kpiData, setKpiData] = useState<Kpidata[]>([]);
-  const [selectedDealerships, setSelectedDealerships] = useState<Dealership[]>(
-    [],
-  );
-  const [selectedKpis, setSelectedKpis] = useState<Kpi[]>([]);
+  const [groupedKpis, setGroupedKpis] = useState<GroupedKpi>({
+    totals: [],
+    customerPay: [],
+    internal: [],
+    warranty: [],
+    expense: [],
+    sublet: [],
+    other: [],
+  });
+  const [selectedDealerships, setSelectedDealerships] = useState<Option[]>([]);
+  const [selectedKpis, setSelectedKpis] = useState<Option[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState<Option>();
 
   const kpiManagerApi = "/api/kpi-manager";
 
@@ -36,34 +77,14 @@ const Home = () => {
     fetch(kpiManagerApi)
       .then((response) => response.json())
       .then((data: KpiManagerResponse) => {
-        const { dealerships, kpis, kpiData } = data;
-        const allKpis = kpis.totals.concat(
-          kpis.customerPay,
-          kpis.internal,
-          kpis.warranty,
-          kpis.expense,
-          kpis.sublet,
-          kpis.other,
-        );
+        const { dealerships, groupedKpis, kpiData, allKpis } = data;
+
         setDealerships(dealerships);
         setKpis(allKpis);
         setKpiData(kpiData);
+        setGroupedKpis(groupedKpis);
       });
   }, []);
-
-  const handleDealerChange = (selectedOptions: Option[]) => {
-    const selectedDealerships = selectedOptions.map((option) =>
-      dealerships.find((dealership) => dealership.dealerCode === option.value),
-    ) as Dealership[];
-    setSelectedDealerships(selectedDealerships);
-  };
-
-  const handleKpiChange = (selectedOptions: Option[]) => {
-    const selectedKpis = selectedOptions.map((option) =>
-      kpis.find((kpi) => kpi.id === option.value),
-    ) as Kpi[];
-    setSelectedKpis(selectedKpis);
-  };
 
   const columns = useMemo(() => {
     const columns = [
@@ -74,8 +95,8 @@ const Home = () => {
       // Every selected dealership will have a column
       ...selectedDealerships.map((dealership) => {
         return {
-          Header: dealership.name,
-          accessor: dealership.dealerCode,
+          Header: dealership?.label,
+          accessor: dealership?.value,
         };
       }),
     ];
@@ -85,15 +106,17 @@ const Home = () => {
   const data = useMemo(() => {
     // Create a row for each kpi
     return selectedKpis.map((kpi) => {
-      const rowData: Record<string, number> = {};
+      const rowData: Record<string, string | number> = {
+        kpiId: kpi?.label,
+      };
 
       // Add the value for each dealership
       selectedDealerships.forEach((dealership) => {
         const kpiDataForDealer = kpiData.find(
           (data) =>
-            data.dealerCode === dealership.dealerCode && data.kpiId === kpi.id,
+            data.dealerCode === dealership.value && data.kpiId === kpi.value,
         );
-        rowData[dealership.dealerCode] = kpiDataForDealer?.value ?? 0;
+        rowData[dealership.value] = kpiDataForDealer?.value ?? 0;
       });
       return rowData;
     });
@@ -102,54 +125,135 @@ const Home = () => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
 
+  useEffect(() => {
+    console.log("selected group", selectedGroup);
+    console.log("grouped kpis", groupedKpis);
+  }, [selectedGroup]);
+
+  const chartData = useMemo<ChartData<"bar">>(() => {
+    if (!selectedGroup) {
+      return { labels: [], datasets: [] };
+    }
+
+    // Get the KPIs for the selected group
+    const selectedKpis = groupedKpis[selectedGroup.value as keyof GroupedKpi];
+    console.log("selected kpis", selectedKpis);
+
+    // Labels are the names of the KPIs
+    const labels = selectedKpis.map((kpi) => kpi.name);
+
+    const datasets = selectedDealerships.map((dealership) => {
+      const data = selectedKpis.map((kpi) => {
+        const kpiDataForDealer = kpiData.find(
+          (data) =>
+            data.dealerCode === dealership.value && data.kpiId === kpi.id,
+        );
+        return kpiDataForDealer?.value ?? 0;
+      });
+      return {
+        label: dealership.label,
+        data,
+        fill: true,
+        borderColor: generateRandomColor(),
+      };
+    });
+
+    return {
+      labels,
+      datasets,
+    };
+  }, [groupedKpis, kpiData, selectedGroup, selectedDealerships]);
+
   return (
     <Box>
       <Heading>Quotus Technical</Heading>
       <Text as="b">{introductionMessage}</Text>
       {/* Dealership Selector */}
-      {dealerships.length > 0 && (
-        <Select
-          isMulti
-          isClearable
-          options={getReactSelectOptionsFromDealerships(dealerships)}
-          onChange={() => handleDealerChange}
-        />
-      )}
       {/* Kpi Selector */}
       {kpis.length > 0 && (
         <Select
           isMulti
           isClearable
           options={getReactSelectOptionsFromKpis(kpis)}
-          onChange={() => handleKpiChange}
+          onChange={(selectedOptions) => {
+            setSelectedKpis(selectedOptions as Option[]);
+          }}
+          value={selectedKpis}
+          placeholder="Select KPIs"
+        />
+      )}
+      {dealerships.length > 0 && (
+        <Select
+          isMulti
+          isClearable
+          options={getReactSelectOptionsFromDealerships(dealerships)}
+          onChange={(selectedOptions) => {
+            setSelectedDealerships(selectedOptions as Option[]);
+          }}
+          value={selectedDealerships}
+          placeholder="Select Dealerships"
         />
       )}
       {/* Table */}
-      <TableContainer>
-        <Table {...getTableProps()}>
-          <Thead>
-            {headerGroups.map((headerGroup) => (
-              <Tab {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <Th {...column.getHeaderProps()}>{column.render("Header")}</Th>
-                ))}
-              </Tab>
-            ))}
-          </Thead>
-          <Tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => (
-                    <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+      {data.length > 0 && columns.length > 0 && (
+        <TableContainer>
+          <Table {...getTableProps()}>
+            <Thead>
+              {headerGroups.map((headerGroup, index) => (
+                <Tr
+                  {...headerGroup.getHeaderGroupProps()}
+                  key={`${headerGroup.id}-${index}`}
+                >
+                  {headerGroup.headers.map((column) => (
+                    <Th {...column.getHeaderProps()} key={column.id}>
+                      {column.render("Header")}
+                    </Th>
                   ))}
-                </tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      </TableContainer>
+                </Tr>
+              ))}
+            </Thead>
+            <Tbody {...getTableBodyProps()}>
+              {rows.map((row) => {
+                prepareRow(row);
+                return (
+                  <Tr {...row.getRowProps()} key={row.id}>
+                    {row.cells.map((cell) => (
+                      <Td {...cell.getCellProps()} key={cell.column.id}>
+                        {cell.render("Cell")}
+                      </Td>
+                    ))}
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      )}
+      {data.length > 0 && columns.length > 0 && (
+        <Select
+          options={getReactSelectOptionsFromGroupedKpis(groupedKpis)}
+          onChange={(selectedOption) => {
+            setSelectedGroup(selectedOption as Option);
+          }}
+          placeholder="Select Kpi Group"
+          value={selectedGroup}
+        />
+      )}
+      {selectedGroup && (
+        <Box h="300px">
+          <Bar
+            data={chartData}
+            options={{
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            }}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
