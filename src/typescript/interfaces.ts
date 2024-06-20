@@ -11,3 +11,13 @@ export interface Kpi {
     name: string;
     format: string;
 }
+
+export interface GroupedKpi {
+    totals: Kpi[];
+    customerPay: Kpi[];
+    internal: Kpi[];
+    warranty: Kpi[];
+    expense: Kpi[];
+    sublet: Kpi[];
+    other: Kpi[];
+}
