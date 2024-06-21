@@ -14,15 +14,13 @@ import {
   HStack,
   IconButton,
 } from "@chakra-ui/react";
+import NoSSR from "react-no-ssr";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "@chakra-ui/next-js";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import type { Dealership, Kpi, KpiData, Option } from "@/typescript/interfaces";
 import type { KpiManagerResponse } from "@pages/api/kpi-manager";
 import Select from "react-select";
 import {
-  generateRandomColor,
   getReactSelectOptionsFromDealerships,
   getReactSelectOptionsFromKpis,
 } from "@utils/helper";
@@ -36,13 +34,14 @@ import {
   LinearScale,
   CategoryScale,
   PointElement,
-  ChartData,
   BarElement,
   Filler,
 } from "chart.js";
 import { Line, Bar } from "react-chartjs-2";
 import { useTableConfig } from "@hooks/useKpiTableConfig";
 import { useKpiByFormatBarChart } from "@/hooks/useKpiByFormatBarChart";
+import { useKpiByFormatAndFirstWordLineChart } from "@/hooks/useKpiByFormatAndFirstWordLineChart";
+import { Link } from "@chakra-ui/next-js";
 
 Chart.register(
   LineElement,
@@ -63,6 +62,7 @@ const Home = () => {
   const [groupedByFormat, setGroupedbyFormatKpis] = useState<
     Record<string, Kpi[]>
   >({});
+  const [loading, setLoading] = useState<boolean>(true);
   const [groupedByFormatAndFirstWord, setGroupedbyFormatAndFirstWordKpis] =
     useState<Record<string, Kpi[]>>({});
   const [selectedDealerships, setSelectedDealerships] = useState<Option[]>([]);
@@ -78,29 +78,37 @@ const Home = () => {
 
   const kpiManagerApi = "/api/kpi-manager";
 
+  // FETCHES
   useEffect(() => {
-    // fetch kpi-manager
-    fetch(kpiManagerApi)
-      .then((response) => response.json())
-      .then((data: KpiManagerResponse) => {
-        const {
-          dealerships,
-          groupedByFormatKpis: groupedKpis,
-          kpiData,
-          allKpis,
-          groupedByFormatAndFirstWordKpis,
-        } = data;
-        setDealerships(dealerships);
-        setKpis(allKpis);
-        setKpiData(kpiData);
-        setGroupedbyFormatKpis(groupedKpis);
-        setGroupedbyFormatAndFirstWordKpis(groupedByFormatAndFirstWordKpis);
-      });
+    const fetchData = async () => {
+      const response = await fetch(kpiManagerApi);
+      const data: KpiManagerResponse = await response.json();
+
+      const {
+        dealerships,
+        groupedByFormatKpis: groupedKpis,
+        kpiData,
+        allKpis,
+        groupedByFormatAndFirstWordKpis,
+      } = data;
+
+      setDealerships(dealerships);
+      setKpis(allKpis);
+      setKpiData(kpiData);
+      setGroupedbyFormatKpis(groupedKpis);
+      setGroupedbyFormatAndFirstWordKpis(groupedByFormatAndFirstWordKpis);
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
 
+  // CUSTOM HOOKS
+  // custom hook getting the react-table config
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTableConfig({ selectedDealerships, selectedKpis, kpiData });
 
+  // custom hook getting the data chartjs charts
   const barChartData = useKpiByFormatBarChart({
     groupedByFormat,
     kpiData,
@@ -108,46 +116,12 @@ const Home = () => {
     selectedDealerships,
   });
 
-  const lineChartData = useMemo<ChartData<"line">>(() => {
-    if (!selectedKpiFormatAndFirstWordGroup) {
-      return { labels: [], datasets: [] };
-    }
-
-    // Get the KPIs for the selected group
-    const groupKpis =
-      groupedByFormatAndFirstWord[selectedKpiFormatAndFirstWordGroup.value];
-
-    // The labels are the names of the dealerships
-    const labels = selectedDealerships.map((dealership) => dealership.label);
-
-    const datasets = groupKpis.map((kpi) => {
-      const data = selectedDealerships.map((dealership) => {
-        const kpiDataForDealer = kpiData.find(
-          (data) =>
-            data.dealerCode === dealership.value && data.kpiId === kpi.id,
-        );
-        return kpiDataForDealer?.value ?? 0;
-      });
-
-      return {
-        label: kpi.name,
-        data,
-        fill: true,
-        backgroundColor: generateRandomColor(),
-        showLine: false,
-      };
-    });
-
-    return {
-      labels,
-      datasets,
-    };
-  }, [
+  const lineChartData = useKpiByFormatAndFirstWordLineChart({
     groupedByFormatAndFirstWord,
     kpiData,
     selectedKpiFormatAndFirstWordGroup,
     selectedDealerships,
-  ]);
+  });
 
   const sidenavWidth = isOpen ? "250px" : "0";
   const sidenavTransition = "width 0.3s";
@@ -183,28 +157,34 @@ const Home = () => {
         <Text as="b">{introductionMessage}</Text>
 
         {/* Dealership Selector */}
-        <Select
-          isMulti
-          isClearable
-          options={getReactSelectOptionsFromDealerships(dealerships)}
-          onChange={(selectedOptions) => {
-            setSelectedDealerships(selectedOptions as Option[]);
-          }}
-          value={selectedDealerships}
-          placeholder="Select Dealerships"
-        />
+
+        <NoSSR>
+          <Select
+            isMulti
+            isClearable
+            options={getReactSelectOptionsFromDealerships(dealerships)}
+            onChange={(selectedOptions) => {
+              setSelectedDealerships(selectedOptions as Option[]);
+            }}
+            value={selectedDealerships}
+            placeholder="First select at leasr one dealership"
+            id="dealership-selector"
+          />
+        </NoSSR>
 
         {/* KPI Selector */}
-        <Select
-          isMulti
-          isClearable
-          options={getReactSelectOptionsFromKpis(kpis)}
-          onChange={(selectedOptions) => {
-            setSelectedKpis(selectedOptions as Option[]);
-          }}
-          value={selectedKpis}
-          placeholder="Select KPIs"
-        />
+        <NoSSR>
+          <Select
+            isMulti
+            isClearable
+            options={getReactSelectOptionsFromKpis(kpis)}
+            onChange={(selectedOptions) => {
+              setSelectedKpis(selectedOptions as Option[]);
+            }}
+            value={selectedKpis}
+            placeholder="Then you can Select KPIs for the table"
+          />
+        </NoSSR>
 
         {/* Kpi Table */}
         <TableContainer>
@@ -241,14 +221,17 @@ const Home = () => {
         </TableContainer>
 
         {/* Kpi Group by format Selector */}
-        <Select
-          options={getReactSelectOptionsFromGroupedKpis(groupedByFormat)}
-          onChange={(selectedOption) => {
-            setSelectedKpiFormatGroup(selectedOption as Option);
-          }}
-          placeholder="Select Kpi By Format Group"
-          value={selectedKpiFormatGroup}
-        />
+        <NoSSR>
+          <Select
+            options={getReactSelectOptionsFromGroupedKpis(groupedByFormat)}
+            onChange={(selectedOption) => {
+              setSelectedKpiFormatGroup(selectedOption as Option);
+            }}
+            placeholder="Select Kpi By Format Group for the Bar Chart"
+            value={selectedKpiFormatGroup}
+            id="kpi-by-format-group"
+          />
+        </NoSSR>
 
         {/* Bar Chart */}
         <Box
@@ -270,16 +253,19 @@ const Home = () => {
         </Box>
 
         {/* Kpi by format and first word selector */}
-        <Select
-          options={getReactSelectOptionsFromGroupedKpis(
-            groupedByFormatAndFirstWord,
-          )}
-          onChange={(selectedOption) => {
-            setSelectedKpiFormatAndFirstWordGroup(selectedOption as Option);
-          }}
-          placeholder="Select Kpi By Format And First Word Group (Its just a way to classify I know its weird)"
-          value={selectedKpiFormatAndFirstWordGroup}
-        />
+        <NoSSR>
+          <Select
+            options={getReactSelectOptionsFromGroupedKpis(
+              groupedByFormatAndFirstWord,
+            )}
+            onChange={(selectedOption) => {
+              setSelectedKpiFormatAndFirstWordGroup(selectedOption as Option);
+            }}
+            placeholder="Select Kpi By Format And First Word Group (Its just a way to classify I know its weird) for the line chart"
+            value={selectedKpiFormatAndFirstWordGroup}
+            id="kpi-by-format-and-first-word-group"
+          />
+        </NoSSR>
 
         {/* Line Chart */}
         <Box
