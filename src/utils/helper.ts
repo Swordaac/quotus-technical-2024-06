@@ -1,7 +1,7 @@
-import type { Kpidata, Dealership, Kpi, Option, GroupedKpi } from "@/typescript/interfaces";
+import type { KpiData, Dealership, Kpi, Option, GroupedKpi } from "@/typescript/interfaces";
 
-export const generateKpiData = (dealerships: Dealership[], kpis: Kpi[]): Kpidata[] => {
-    const kpiData: Kpidata[] = [];
+export const generateKpiData = (dealerships: Dealership[], kpis: Kpi[]): KpiData[] => {
+    const kpiData: KpiData[] = [];
     dealerships.forEach((dealer) => {
         kpis.forEach((kpi) => {
             let value: number = 0;

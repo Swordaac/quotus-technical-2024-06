@@ -16,7 +16,7 @@ export interface GroupedKpi {
     [key: string]: Kpi[];
 }
 
-export interface Kpidata {
+export interface KpiData {
     dealerCode: string;
     kpiId: string;
     value: number;

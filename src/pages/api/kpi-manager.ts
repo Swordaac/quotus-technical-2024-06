@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { kpis } from '@/data/kpis'
 import { dealerships } from '@/data/dealerships'
-import type { Dealership, Kpidata, Kpi, GroupedKpi } from '@/typescript/interfaces';
+import type { Dealership, KpiData, Kpi, GroupedKpi } from '@/typescript/interfaces';
 import { generateKpiData, groupKpisByFormat, groupKpisByFormatAndThePresenceOfTheSameFirstWordInTheNameAndTheSameFormat } from '@utils/helper';
 
 export type KpiManagerResponse = {
@@ -10,7 +10,7 @@ export type KpiManagerResponse = {
     allKpis: Kpi[];
     groupedByFormatKpis: GroupedKpi;
     groupedByFormatAndFirstWordKpis: GroupedKpi;
-    kpiData: Kpidata[];
+    kpiData: KpiData[];
 }
 
 export default function handler(
