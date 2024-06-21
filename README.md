@@ -27,12 +27,6 @@ Welcome to the Quotus Technical Test! This project is designed to assess your cr
    yarn install
    ```
 
-4. **Create a new branch**:
-
-   ```bash
-   git checkout -b <branch-name>
-   ```
-
 5. **Start the development server**:
    ```bash
     yarn dev
@@ -95,14 +89,6 @@ The existing components (graphs, tables, selects) are there as examples. You can
 
 ## Git Workflow
 
-### Branching
-
-Create a new branch for your work. This helps in keeping the main branch clean and allows for easier code reviews.
-
-```bash
-git checkout -b <your-branch-name>
-```
-
 ### Commits
 Make sure to commit your changes regularly with meaningful commit messages.
 ```bash
@@ -121,7 +107,7 @@ Once you are done with your work, create a pull request to merge your branch int
 1. Go to the repository on GitHub.
 2. Click on the "Pull Requests" tab.
 3. Click on the "New Pull Request" button.
-4. Select the base branch as `dev` and the compare branch as your branch.
+4. Select the base branch as `main` and the compare branch as your branch.
 5. Click on the "Create Pull Request" button.
 
 ### Useful Links
