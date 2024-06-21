@@ -50,4 +50,27 @@ export const generateRandomColor = () => {
     }
     return color;
   };
-  
+
+export const groupKpisByFormat = (kpis: Kpi[]): GroupedKpi => {
+    const groupedKpis: GroupedKpi = {};
+    kpis.forEach((kpi) => {
+        if (!groupedKpis[kpi.format]) {
+            groupedKpis[kpi.format] = [];
+        }
+        groupedKpis[kpi.format].push(kpi);
+    });
+    return groupedKpis;
+}
+
+export const groupKpisByFormatAndThePresenceOfTheSameFirstWordInTheNameAndTheSameFormat = (kpis: Kpi[]): GroupedKpi => {
+    const groupedKpis: GroupedKpi = {};
+    kpis.forEach((kpi) => {
+        const words = kpi.name.split(" ");
+        const key = `${kpi.format}-${words[0]}`;
+        if (!groupedKpis[key]) {
+            groupedKpis[key] = [];
+        }
+        groupedKpis[key].push(kpi);
+    });
+    return groupedKpis;
+}

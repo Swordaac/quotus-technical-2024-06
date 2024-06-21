@@ -9,15 +9,16 @@ import {
   Thead,
   Tbody,
   Tr,
+  VStack,
+  useDisclosure,
+  HStack,
+  IconButton,
 } from "@chakra-ui/react";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useEffect, useMemo, useState } from "react";
-import type {
-  Dealership,
-  Kpi,
-  Kpidata,
-  Option,
-  GroupedKpi,
-} from "@/typescript/interfaces";
+import { Link } from "@chakra-ui/next-js";
+import Image from "next/image";
+import type { Dealership, Kpi, Kpidata, Option } from "@/typescript/interfaces";
 import type { KpiManagerResponse } from "@pages/api/kpi-manager";
 import Select from "react-select";
 import {
@@ -38,9 +39,9 @@ import {
   PointElement,
   ChartData,
   BarElement,
+  Filler,
 } from "chart.js";
 import { Line, Bar } from "react-chartjs-2";
-import { kpis } from "../data/kpis";
 
 Chart.register(
   LineElement,
@@ -50,25 +51,21 @@ Chart.register(
   CategoryScale,
   LinearScale,
   PointElement,
-  BarElement
+  BarElement,
+  Filler,
 );
 
 const Home = () => {
   const [dealerships, setDealerships] = useState<Dealership[]>([]);
   const [kpis, setKpis] = useState<Kpi[]>([]);
   const [kpiData, setKpiData] = useState<Kpidata[]>([]);
-  const [groupedKpis, setGroupedKpis] = useState<GroupedKpi>({
-    totals: [],
-    customerPay: [],
-    internal: [],
-    warranty: [],
-    expense: [],
-    sublet: [],
-    other: [],
-  });
+  const [groupedKpis, setGroupedKpis] = useState<Record<string, Kpi[]>>({});
   const [selectedDealerships, setSelectedDealerships] = useState<Option[]>([]);
   const [selectedKpis, setSelectedKpis] = useState<Option[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<Option>();
+  const [selectedKpiFormatGroup, setSelectedKpiFormatGroup] =
+    useState<Option>();
+
+  const { isOpen, onToggle } = useDisclosure();
 
   const kpiManagerApi = "/api/kpi-manager";
 
@@ -77,8 +74,12 @@ const Home = () => {
     fetch(kpiManagerApi)
       .then((response) => response.json())
       .then((data: KpiManagerResponse) => {
-        const { dealerships, groupedKpis, kpiData, allKpis } = data;
-
+        const {
+          dealerships,
+          groupedByFormatKpis: groupedKpis,
+          kpiData,
+          allKpis,
+        } = data;
         setDealerships(dealerships);
         setKpis(allKpis);
         setKpiData(kpiData);
@@ -86,7 +87,7 @@ const Home = () => {
       });
   }, []);
 
-  const columns = useMemo(() => {
+  const tableColumns = useMemo(() => {
     const columns = [
       {
         Header: "Kpi",
@@ -103,7 +104,7 @@ const Home = () => {
     return columns;
   }, [selectedDealerships, selectedKpis, kpiData]);
 
-  const data = useMemo(() => {
+  const tableData = useMemo(() => {
     // Create a row for each kpi
     return selectedKpis.map((kpi) => {
       const rowData: Record<string, string | number> = {
@@ -123,20 +124,15 @@ const Home = () => {
   }, [selectedDealerships, selectedKpis, kpiData]);
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns, data });
-
-  useEffect(() => {
-    console.log("selected group", selectedGroup);
-    console.log("grouped kpis", groupedKpis);
-  }, [selectedGroup]);
+    useTable({ columns: tableColumns, data: tableData });
 
   const chartData = useMemo<ChartData<"bar">>(() => {
-    if (!selectedGroup) {
+    if (!selectedKpiFormatGroup) {
       return { labels: [], datasets: [] };
     }
 
     // Get the KPIs for the selected group
-    const selectedKpis = groupedKpis[selectedGroup.value as keyof GroupedKpi];
+    const selectedKpis = groupedKpis[selectedKpiFormatGroup.value];
     console.log("selected kpis", selectedKpis);
 
     // Labels are the names of the KPIs
@@ -162,15 +158,42 @@ const Home = () => {
       labels,
       datasets,
     };
-  }, [groupedKpis, kpiData, selectedGroup, selectedDealerships]);
+  }, [groupedKpis, kpiData, selectedKpiFormatGroup, selectedDealerships]);
 
+  const sidenavWidth = isOpen ? "250px" : "0";
+  const sidenavTransition = "width 0.3s";
   return (
-    <Box>
-      <Heading>Quotus Technical</Heading>
-      <Text as="b">{introductionMessage}</Text>
-      {/* Dealership Selector */}
-      {/* Kpi Selector */}
-      {kpis.length > 0 && (
+    <Box display="flex" height="100vh">
+      {/* Sidenav */}
+      <Box
+        width={sidenavWidth}
+        transition={sidenavTransition}
+        overflow="hidden"
+      >
+        <Box p="4" bg="gray.100" height="100%">
+          <Heading size="md" mb="4">
+            Menu
+          </Heading>
+          <VStack align="start">
+            <Link href="/">Home</Link>
+          </VStack>
+        </Box>
+      </Box>
+
+      {/* Main Content */}
+      <Box flex="1" p="4">
+        <HStack>
+          <IconButton
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            onClick={onToggle}
+            aria-label="Toggle Sidebar"
+          />
+          <Heading>Quotus Technical</Heading>
+        </HStack>
+        <Text as="b">{introductionMessage}</Text>
+
+        {/* KPI Selector */}
+
         <Select
           isMulti
           isClearable
@@ -181,8 +204,9 @@ const Home = () => {
           value={selectedKpis}
           placeholder="Select KPIs"
         />
-      )}
-      {dealerships.length > 0 && (
+
+        {/* Dealership Selector */}
+
         <Select
           isMulti
           isClearable
@@ -193,9 +217,9 @@ const Home = () => {
           value={selectedDealerships}
           placeholder="Select Dealerships"
         />
-      )}
-      {/* Table */}
-      {data.length > 0 && columns.length > 0 && (
+
+        {/* Table */}
+
         <TableContainer>
           <Table {...getTableProps()}>
             <Thead>
@@ -228,19 +252,23 @@ const Home = () => {
             </Tbody>
           </Table>
         </TableContainer>
-      )}
-      {data.length > 0 && columns.length > 0 && (
+
+        {/* Kpi Group Selector */}
         <Select
           options={getReactSelectOptionsFromGroupedKpis(groupedKpis)}
           onChange={(selectedOption) => {
-            setSelectedGroup(selectedOption as Option);
+            setSelectedKpiFormatGroup(selectedOption as Option);
           }}
           placeholder="Select Kpi Group"
-          value={selectedGroup}
+          value={selectedKpiFormatGroup}
         />
-      )}
-      {selectedGroup && (
-        <Box h="300px">
+
+        {/* Chart */}
+        <Box
+          h="300px"
+          w={`calc(100vw - ${sidenavWidth})`}
+          transition={"width 0.3s"}
+        >
           <Bar
             data={chartData}
             options={{
@@ -253,7 +281,7 @@ const Home = () => {
             }}
           />
         </Box>
-      )}
+      </Box>
     </Box>
   );
 };

@@ -13,13 +13,7 @@ export interface Kpi {
 }
 
 export interface GroupedKpi {
-    totals: Kpi[];
-    customerPay: Kpi[];
-    internal: Kpi[];
-    warranty: Kpi[];
-    expense: Kpi[];
-    sublet: Kpi[];
-    other: Kpi[];
+    [key: string]: Kpi[];
 }
 
 export interface Kpidata {
