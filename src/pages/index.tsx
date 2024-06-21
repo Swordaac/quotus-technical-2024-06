@@ -173,118 +173,123 @@ const Home = () => {
         </NoSSR>
 
         {/* KPI Selector */}
-        <NoSSR>
-          <Select
-            isMulti
-            isClearable
-            options={getReactSelectOptionsFromKpis(kpis)}
-            onChange={(selectedOptions) => {
-              setSelectedKpis(selectedOptions as Option[]);
-            }}
-            value={selectedKpis}
-            placeholder="Then you can Select KPIs for the table"
-          />
-        </NoSSR>
-
-        {/* Kpi Table */}
-        <TableContainer>
-          <Table {...getTableProps()}>
-            <Thead>
-              {headerGroups.map((headerGroup, index) => (
-                <Tr
-                  {...headerGroup.getHeaderGroupProps()}
-                  key={`${headerGroup.id}-${index}`}
-                >
-                  {headerGroup.headers.map((column) => (
-                    <Th {...column.getHeaderProps()} key={column.id}>
-                      {column.render("Header")}
-                    </Th>
+        {selectedDealerships.length > 0 && (
+          <>
+            <NoSSR>
+              <Select
+                isMulti
+                isClearable
+                options={getReactSelectOptionsFromKpis(kpis)}
+                onChange={(selectedOptions) => {
+                  setSelectedKpis(selectedOptions as Option[]);
+                }}
+                value={selectedKpis}
+                placeholder="Then you can Select KPIs for the table"
+              />
+            </NoSSR>
+            {/* Kpi Table */}
+            <TableContainer>
+              <Table {...getTableProps()}>
+                <Thead>
+                  {headerGroups.map((headerGroup, index) => (
+                    <Tr
+                      {...headerGroup.getHeaderGroupProps()}
+                      key={`${headerGroup.id}-${index}`}
+                    >
+                      {headerGroup.headers.map((column) => (
+                        <Th {...column.getHeaderProps()} key={column.id}>
+                          {column.render("Header")}
+                        </Th>
+                      ))}
+                    </Tr>
                   ))}
-                </Tr>
-              ))}
-            </Thead>
-            <Tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
-                prepareRow(row);
-                return (
-                  <Tr {...row.getRowProps()} key={row.id}>
-                    {row.cells.map((cell) => (
-                      <Td {...cell.getCellProps()} key={cell.column.id}>
-                        {cell.render("Cell")}
-                      </Td>
-                    ))}
-                  </Tr>
-                );
-              })}
-            </Tbody>
-          </Table>
-        </TableContainer>
+                </Thead>
+                <Tbody {...getTableBodyProps()}>
+                  {rows.map((row) => {
+                    prepareRow(row);
+                    return (
+                      <Tr {...row.getRowProps()} key={row.id}>
+                        {row.cells.map((cell) => (
+                          <Td {...cell.getCellProps()} key={cell.column.id}>
+                            {cell.render("Cell")}
+                          </Td>
+                        ))}
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
 
-        {/* Kpi Group by format Selector */}
-        <NoSSR>
-          <Select
-            options={getReactSelectOptionsFromGroupedKpis(groupedByFormat)}
-            onChange={(selectedOption) => {
-              setSelectedKpiFormatGroup(selectedOption as Option);
-            }}
-            placeholder="Select Kpi By Format Group for the Bar Chart"
-            value={selectedKpiFormatGroup}
-            id="kpi-by-format-group"
-          />
-        </NoSSR>
+            {/* Kpi Group by format Selector */}
+            <NoSSR>
+              <Select
+                options={getReactSelectOptionsFromGroupedKpis(groupedByFormat)}
+                onChange={(selectedOption) => {
+                  setSelectedKpiFormatGroup(selectedOption as Option);
+                }}
+                placeholder="Select Kpi By Format Group for the Bar Chart"
+                value={selectedKpiFormatGroup}
+                id="kpi-by-format-group"
+              />
+            </NoSSR>
 
-        {/* Bar Chart */}
-        <Box
-          h="300px"
-          w={`calc(100vw - ${sidenavWidth})`}
-          transition={sidenavTransition}
-        >
-          <Bar
-            data={barChartData}
-            options={{
-              maintainAspectRatio: false,
-              scales: {
-                y: {
-                  beginAtZero: true,
-                },
-              },
-            }}
-          />
-        </Box>
+            {/* Bar Chart */}
+            <Box
+              h="300px"
+              w={`calc(100vw - ${sidenavWidth})`}
+              transition={sidenavTransition}
+            >
+              <Bar
+                data={barChartData}
+                options={{
+                  maintainAspectRatio: false,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                    },
+                  },
+                }}
+              />
+            </Box>
 
-        {/* Kpi by format and first word selector */}
-        <NoSSR>
-          <Select
-            options={getReactSelectOptionsFromGroupedKpis(
-              groupedByFormatAndFirstWord,
-            )}
-            onChange={(selectedOption) => {
-              setSelectedKpiFormatAndFirstWordGroup(selectedOption as Option);
-            }}
-            placeholder="Select Kpi By Format And First Word Group (Its just a way to classify I know its weird) for the line chart"
-            value={selectedKpiFormatAndFirstWordGroup}
-            id="kpi-by-format-and-first-word-group"
-          />
-        </NoSSR>
+            {/* Kpi by format and first word selector */}
+            <NoSSR>
+              <Select
+                options={getReactSelectOptionsFromGroupedKpis(
+                  groupedByFormatAndFirstWord,
+                )}
+                onChange={(selectedOption) => {
+                  setSelectedKpiFormatAndFirstWordGroup(
+                    selectedOption as Option,
+                  );
+                }}
+                placeholder="Select Kpi By Format And First Word Group (Its just a way to classify I know its weird) for the line chart"
+                value={selectedKpiFormatAndFirstWordGroup}
+                id="kpi-by-format-and-first-word-group"
+              />
+            </NoSSR>
 
-        {/* Line Chart */}
-        <Box
-          h="300px"
-          w={`calc(100vw - ${sidenavWidth})`}
-          transition={sidenavTransition}
-        >
-          <Line
-            data={lineChartData}
-            options={{
-              maintainAspectRatio: false,
-              scales: {
-                y: {
-                  beginAtZero: true,
-                },
-              },
-            }}
-          />
-        </Box>
+            {/* Line Chart */}
+            <Box
+              h="300px"
+              w={`calc(100vw - ${sidenavWidth})`}
+              transition={sidenavTransition}
+            >
+              <Line
+                data={lineChartData}
+                options={{
+                  maintainAspectRatio: false,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                    },
+                  },
+                }}
+              />
+            </Box>
+          </>
+        )}
       </Box>
     </Box>
   );
@@ -293,8 +298,13 @@ const Home = () => {
 export default Home;
 
 const introductionMessage = `
-Welcome to the Quotus Technical test. This is a simple application that fetches data from an API and displays it on the screen. 
-Modify the pages/index.tsx file to see the changes reflected on the screen. You must fetch the data from the API and distribute it to the components in the JSX. The components are waiting for their options and setters.
-Once you have provided the data to the components, you will see the data displayed on the screen. You can now style the page as you see fit. You have total freedom over the styling of the page. You can also use the Chakra UI components that are already installed in the project.
-Other than fetching and basic coding style, creativity is the main focus of this test. Good luck!
+Welcome to the Quotus Technical test. This landing page is designed to test your creativity and ability to create a visually appealing and user-friendly interface. The current setup includes basic implementations of react-select, react-table, and chartjs (with rechart) to give you an idea of the existing functionality.
+
+Feel free to use these libraries or replace them with any other library or dependency you prefer. The goal is to transform this unstyled page into a modern, aesthetically pleasing UI that demonstrates your design skills and attention to UX.
+
+The graphs, tables, and selectors are provided as examples. You are encouraged to modify, replace, or remove them as you see fit. The data included is mock data, replicating what we actually have in the app, providing a realistic environment for your work.
+
+This is your sandbox—make it your own. Management will focus on the visual style, while I will give a slight emphasis on code organization, as I already assume you have the necessary React knowledge.
+
+Good luck, and have fun!
 `;
