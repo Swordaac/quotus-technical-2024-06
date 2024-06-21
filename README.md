@@ -75,7 +75,7 @@ This project uses the following dependencies:
 
 ## Introduction
 
-You will find an unstyled landing page in the `index.tsx` file. The current setup includes a table, selectors, and charts as examples. These are implemented using `react-select`, `react-table`, and `chart.js` (with `react-chartjs-2`). The goal is to style this page and make it visually appealing.
+You will find an unstyled landing page in the `index.tsx` file using the `Chakra-UI` React library. The current setup includes a table, selectors, and charts as examples. These are implemented using `react-select`, `react-table`, and `chart.js` (with `react-chartjs-2`). The goal is to style this page and make it visually appealing.
 
 ## Creativity
 
@@ -92,7 +92,6 @@ While creativity is the main focus, the organization of your code will also be c
 ## Graph, Table, and Selects
 
 The existing components (graphs, tables, selects) are there as examples. You can choose to use them or replace them with your own implementations.
-
 
 ## Git Workflow
 
