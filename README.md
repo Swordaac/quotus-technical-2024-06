@@ -19,7 +19,6 @@ Welcome to the Quotus Technical Test! This project is designed to assess your cr
    ```bash
    git clone <your-forked-repository-url>
    cd <repository-directory>
-
    ```
 
 3. **Install dependencies**:
@@ -126,5 +125,16 @@ Once you are done with your work, create a pull request to merge your branch int
 4. Select the base branch as `dev` and the compare branch as your branch.
 5. Click on the "Create Pull Request" button.
 
+### Useful Links
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://reactjs.org/docs/getting-started.html)
+- [Chakra UI Documentation](https://chakra-ui.com/docs)
+- [Chart.js Documentation](https://www.chartjs.org/docs/latest/)
+- [React Chart.js 2 Documentation](https://react-chartjs-2.js.org/)
+- [React Select Documentation](https://react-select.com/home)
+- [React Table Documentation](https://react-table.tanstack.com/docs/overview)
+- [Prettier Documentation](https://prettier.io/docs/en/index.html)
+- [ESLint Documentation](https://eslint.org/docs/user-guide)
 
 
