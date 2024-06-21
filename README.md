@@ -103,7 +103,7 @@ git push origin <your-branch-name>
 ```
 
 ### Pull Requests
-Once you are done with your work, create a pull request to merge your branch into the dev branch. You can provide a description of the changes you made in the pull request and of your creative choices and porcess.
+Once you are done with your work, create a pull request to merge your branch into the main branch. You can provide a description of the changes you made in the pull request and of your creative choices and porcess.
 1. Go to the repository on GitHub.
 2. Click on the "Pull Requests" tab.
 3. Click on the "New Pull Request" button.
