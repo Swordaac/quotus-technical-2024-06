@@ -202,7 +202,9 @@ const Home = () => {
           <HStack justify="space-between">
             <HStack spacing="10">
               <Box>
-                <Heading size="md">Logo</Heading>
+                <Heading size="md">
+                  <Image src={'/favicon.ico'} alt={'favicon.ico'} width={30} height={30}/>
+                </Heading>
               </Box>
               <Link href="/" display="flex" alignItems="center">
                 <Icon as={FaTachometerAlt} mr="2" />
@@ -353,23 +355,23 @@ const Home = () => {
             </VStack>
             {
                 selectedDealerships.length > 0 ? <HStack justify="center" mt={4}>
-              <IconButton
-              icon={<ChevronLeftIcon/>}
-              aria-label='Previous'
-              onClick={() => handleClick(currentPage - 1)}
-              disabled={currentPage === 1}
-              >
-              Previous
-              </IconButton>
-              <Text fontSize={12}>Page {currentPage} of {totalPages}</Text>
-          <IconButton
-              icon={<ChevronRightIcon/>}
-              aria-label='Next'
-              onClick={() => handleClick(currentPage + 1)}
-              disabled={currentPage === totalPages}
-          >
-            Next
-          </IconButton>
+                  <IconButton
+                      icon={<ChevronLeftIcon />}
+                      aria-label="Previous"
+                      onClick={() => currentPage > 1 && handleClick(currentPage - 1)}
+                      disabled={currentPage === 1}
+                  >
+                    Previous
+                  </IconButton>
+                  <Text fontSize={12}>Page {currentPage} of {totalPages}</Text>
+                  <IconButton
+                      icon={<ChevronRightIcon />}
+                      aria-label="Next"
+                      onClick={() => currentPage < totalPages && handleClick(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </IconButton>
         </HStack> : null
             }
 
